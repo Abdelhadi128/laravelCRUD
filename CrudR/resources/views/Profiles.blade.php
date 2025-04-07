@@ -1,27 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <title>Document</title>
-</head>
-<body>
-    <div class="d-flex gap-3 flex-wrap">
+
+    @if(session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @extends('layouts.master')
+    @section('title')
+        profiles
+    @endsection
+    @section('main')
+    <div class="d-flex gap-3 flex-wrap w-50 mx-auto border mt-5">
+
         @forelse ($profiles as $profile)
-            <div class="card p-3 shadow-sm">
+            <div class="card shadow-sm">
+                <div>
+                    <img src="{{ asset('storage/' . $profile->image) }}" alt="ERROR" width="300" height='200'>
+                </div>
                 <div class="card-body">
                     <p><strong>Name:</strong> {{ $profile->name }}</p>
+                </div>
+                <div class="d-flex ">
+                    <form  action="{{ route('delete', $profile->id) }}" method="POST">
+                        @csrf
+                        @method('delete')
+                        <div>
+                            <button type="submit" class="btn btn-danger ">Delete</button>
+                        </div>
+                    </form>
+                    <form class="ms-2" action="{{ route('edit', $profile->id) }}" method="GET">
+                        @csrf
+                        {{-- @method('delete') --}}
+                        <div>
+                            <button type="submit" class="btn btn-primary ">Update</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         @empty
             <p>No profiles found.</p>
         @endforelse
-    </div>
-    <div>
-        {{$profiles->links()}}
-    </div>
+        <div>
+            {{$profiles->links()}}
+        </div>
 
-</body>
-</html>
+    </div>
+    @endsection
